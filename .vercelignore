@@ -1,0 +1,9 @@
+android/
+ios/
+windows/
+linux/
+macos/
+.dart_tool/
+.git/
+.gitignore
+test/
