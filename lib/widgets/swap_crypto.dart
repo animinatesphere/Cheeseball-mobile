@@ -25,6 +25,11 @@ class _SwapCryptoState extends State<SwapCrypto> {
   String _toCurrency = 'BTC';
   bool _loading = true;
 
+  bool get _canProceed {
+    final v = double.tryParse(_fromCtrl.text);
+    return v != null && v > 0 && _toCtrl.text.isNotEmpty;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +39,6 @@ class _SwapCryptoState extends State<SwapCrypto> {
   Future<void> _fetch() async {
     setState(() => _loading = true);
     final data = await SupabaseService.getCurrencies();
-    // Deduplicate by symbol
     final seen = <String>{};
     final deduped = data.where((c) {
       final sym = c['symbol'] as String?;
@@ -44,7 +48,6 @@ class _SwapCryptoState extends State<SwapCrypto> {
     }).toList();
     setState(() {
       _currencies = deduped;
-      // Set to first currency if exists, otherwise keep defaults
       if (deduped.isNotEmpty) {
         _fromCurrency = deduped[0]['symbol'] as String? ?? 'USDT';
         _toCurrency = deduped.length > 1
@@ -56,9 +59,7 @@ class _SwapCryptoState extends State<SwapCrypto> {
   }
 
   double _getPrice(String symbol) {
-    if (['USDT', 'USDC'].contains(symbol)) {
-      return 1;
-    }
+    if (['USDT', 'USDC'].contains(symbol)) return 1;
     final c =
         _currencies.firstWhere((c) => c['symbol'] == symbol, orElse: () => {});
     return double.tryParse(c['price']?.toString() ?? '0') ?? 0;
@@ -66,12 +67,14 @@ class _SwapCryptoState extends State<SwapCrypto> {
 
   void _calcTo() {
     final val = double.tryParse(_fromCtrl.text);
-    if (val == null) {
-      _toCtrl.text = '';
+    if (val == null || val <= 0) {
+      setState(() => _toCtrl.text = '');
       return;
     }
     final fp = _getPrice(_fromCurrency), tp = _getPrice(_toCurrency);
-    if (fp > 0 && tp > 0) _toCtrl.text = (val * fp / tp).toStringAsFixed(6);
+    if (fp > 0 && tp > 0) {
+      setState(() => _toCtrl.text = (val * fp / tp).toStringAsFixed(6));
+    }
   }
 
   @override
@@ -171,41 +174,34 @@ class _SwapCryptoState extends State<SwapCrypto> {
                       ]),
                   const SizedBox(height: 12),
                   Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                           color: AppTheme.white,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: AppTheme.gray100)),
                       child: Row(children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                                color: AppTheme.gray50,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: AppTheme.gray100)),
-                            child: DropdownButton<String>(
-                                value: _fromCurrency,
-                                underline: const SizedBox(),
-                                isDense: true,
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16,
-                                    color: AppTheme.gray900),
-                                items: _currencies
-                                    .map((c) => DropdownMenuItem(
-                                        value: c['symbol'] as String,
-                                        child: Text(c['symbol'] as String)))
-                                    .toList(),
-                                onChanged: (v) {
-                                  if (v != null) {
-                                    setState(() {
-                                      _fromCurrency = v;
-                                      _calcTo();
-                                    });
-                                  }
-                                })),
-                        const SizedBox(width: 12),
+                        DropdownButton<String>(
+                            value: _fromCurrency,
+                            underline: const SizedBox(),
+                            isDense: true,
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
+                                color: AppTheme.gray900),
+                            items: _currencies
+                                .map((c) => DropdownMenuItem(
+                                    value: c['symbol'] as String,
+                                    child: Text(c['symbol'] as String)))
+                                .toList(),
+                            onChanged: (v) {
+                              if (v != null) {
+                                setState(() {
+                                  _fromCurrency = v;
+                                  _calcTo();
+                                });
+                              }
+                            }),
+                        const SizedBox(width: 8),
                         Expanded(
                             child: TextField(
                                 controller: _fromCtrl,
@@ -250,44 +246,49 @@ class _SwapCryptoState extends State<SwapCrypto> {
                                 style: GoogleFonts.inter(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
-                                    color: AppTheme.gray400)))
+                                    color: AppTheme.gray400))),
+                        if (_toCtrl.text.isNotEmpty)
+                          Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
+                              decoration: BoxDecoration(
+                                  color: AppTheme.green50,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Text('≈ ${_toCtrl.text} $_toCurrency',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.green500))),
                       ]),
                   const SizedBox(height: 12),
                   Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                           color: AppTheme.white,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: AppTheme.gray100)),
                       child: Row(children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                                color: AppTheme.gray50,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: AppTheme.gray100)),
-                            child: DropdownButton<String>(
-                                value: _toCurrency,
-                                underline: const SizedBox(),
-                                isDense: true,
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16,
-                                    color: AppTheme.gray900),
-                                items: _currencies
-                                    .map((c) => DropdownMenuItem(
-                                        value: c['symbol'] as String,
-                                        child: Text(c['symbol'] as String)))
-                                    .toList(),
-                                onChanged: (v) {
-                                  if (v != null) {
-                                    setState(() {
-                                      _toCurrency = v;
-                                      _calcTo();
-                                    });
-                                  }
-                                })),
+                        DropdownButton<String>(
+                            value: _toCurrency,
+                            underline: const SizedBox(),
+                            isDense: true,
+                            style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
+                                color: AppTheme.gray900),
+                            items: _currencies
+                                .map((c) => DropdownMenuItem(
+                                    value: c['symbol'] as String,
+                                    child: Text(c['symbol'] as String)))
+                                .toList(),
+                            onChanged: (v) {
+                              if (v != null) {
+                                setState(() {
+                                  _toCurrency = v;
+                                  _calcTo();
+                                });
+                              }
+                            }),
                         const SizedBox(width: 12),
                         Expanded(
                             child: TextField(
@@ -311,32 +312,34 @@ class _SwapCryptoState extends State<SwapCrypto> {
                       child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(32),
-                              boxShadow: AppTheme.shadowBlue),
+                              boxShadow: _canProceed ? AppTheme.shadowBlue : []),
                           child: ElevatedButton(
-                              onPressed: () {
-                                final fc = _currencies.firstWhere(
-                                    (c) => c['symbol'] == _fromCurrency,
-                                    orElse: () => {});
-                                final tc = _currencies.firstWhere(
-                                    (c) => c['symbol'] == _toCurrency,
-                                    orElse: () => {});
-                                widget.onSwap({
-                                  'type': 'swap',
-                                  'fromAmount': _fromCtrl.text,
-                                  'fromCurrency': _fromCurrency,
-                                  'fromCurrencyId': fc['id'],
-                                  'fromCurrencyIcon': fc['icon_url'],
-                                  'toAmount': _toCtrl.text,
-                                  'toCurrency': _toCurrency,
-                                  'toCurrencyId': tc['id'],
-                                  'toCurrencyIcon': tc['icon_url']
-                                });
-                              },
+                              onPressed: _canProceed
+                                  ? () {
+                                      final fc = _currencies.firstWhere(
+                                          (c) => c['symbol'] == _fromCurrency,
+                                          orElse: () => {});
+                                      final tc = _currencies.firstWhere(
+                                          (c) => c['symbol'] == _toCurrency,
+                                          orElse: () => {});
+                                      widget.onSwap({
+                                        'type': 'swap',
+                                        'fromAmount': _fromCtrl.text,
+                                        'fromCurrency': _fromCurrency,
+                                        'fromCurrencyId': fc['id'],
+                                        'fromCurrencyIcon': fc['icon_url'],
+                                        'toAmount': _toCtrl.text,
+                                        'toCurrency': _toCurrency,
+                                        'toCurrencyId': tc['id'],
+                                        'toCurrencyIcon': tc['icon_url']
+                                      });
+                                    }
+                                  : null,
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: AppTheme.primaryBlue,
+                                  disabledBackgroundColor: AppTheme.blue200,
                                   foregroundColor: AppTheme.white,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 22),
+                                  padding: const EdgeInsets.symmetric(vertical: 22),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(32)),
                                   elevation: 0),

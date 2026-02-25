@@ -27,20 +27,56 @@ class SupabaseService {
     );
   }
 
+  static Future<AuthResponse> signUpWithPassword(
+      String email, String password) async {
+    return await client.auth.signUp(
+      email: email,
+      password: password,
+    );
+  }
+
+  static Future<AuthResponse> signInWithPassword(
+      String email, String password) async {
+    return await client.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  static Future<void> signOut() async {
+    await client.auth.signOut();
+  }
+
+  static Future<void> resetPasswordForEmail(String email) async {
+    await client.auth.resetPasswordForEmail(email);
+  }
+
+  static Future<AuthResponse> verifyResetOtp(String email, String token) async {
+    return await client.auth.verifyOTP(
+      email: email,
+      token: token,
+      type: OtpType.recovery,
+    );
+  }
+
+  static Future<UserResponse> updatePassword(String newPassword) async {
+    return await client.auth.updateUser(
+      UserAttributes(password: newPassword),
+    );
+  }
+
   static Session? get currentSession => client.auth.currentSession;
   static User? get currentUser => client.auth.currentUser;
 
   // --- Profiles ---
   static Future<Map<String, dynamic>?> getProfile(String userId) async {
-    final response = await client
-        .from('profiles')
-        .select()
-        .eq('id', userId)
-        .single();
+    final response =
+        await client.from('profiles').select().eq('id', userId).single();
     return response;
   }
 
-  static Future<void> updateProfile(String userId, Map<String, dynamic> updates) async {
+  static Future<void> updateProfile(
+      String userId, Map<String, dynamic> updates) async {
     await client.from('profiles').update(updates).eq('id', userId);
   }
 
@@ -54,39 +90,36 @@ class SupabaseService {
     return List<Map<String, dynamic>>.from(response);
   }
 
-  static Future<Map<String, dynamic>?> createCurrency(Map<String, dynamic> data) async {
-    final response = await client.from('currencies').insert(data).select().single();
+  static Future<Map<String, dynamic>?> createCurrency(
+      Map<String, dynamic> data) async {
+    final response =
+        await client.from('currencies').insert(data).select().single();
     return response;
   }
 
-  static Future<void> updateCurrency(String id, Map<String, dynamic> updates) async {
+  static Future<void> updateCurrency(
+      String id, Map<String, dynamic> updates) async {
     await client.from('currencies').update(updates).eq('id', id);
   }
 
   // --- Transactions ---
   static Future<List<Map<String, dynamic>>> getTransactions() async {
-    final response = await client
-        .from('transactions')
-        .select('''
+    final response = await client.from('transactions').select('''
           *,
           profiles:user_id (full_name, email),
           from_currency:currencies!from_currency_id (symbol, icon_url),
           to_currency:currencies!to_currency_id (symbol, icon_url)
-        ''')
-        .order('created_at', ascending: false);
+        ''').order('created_at', ascending: false);
     return List<Map<String, dynamic>>.from(response);
   }
 
-  static Future<List<Map<String, dynamic>>> getUserTransactions(String userId) async {
-    final response = await client
-        .from('transactions')
-        .select('''
+  static Future<List<Map<String, dynamic>>> getUserTransactions(
+      String userId) async {
+    final response = await client.from('transactions').select('''
           *,
           from_currency:currencies!from_currency_id (symbol, icon_url),
           to_currency:currencies!to_currency_id (symbol, icon_url)
-        ''')
-        .eq('user_id', userId)
-        .order('created_at', ascending: false);
+        ''').eq('user_id', userId).order('created_at', ascending: false);
     return List<Map<String, dynamic>>.from(response);
   }
 
@@ -94,8 +127,10 @@ class SupabaseService {
     await client.from('transactions').update({'status': status}).eq('id', id);
   }
 
-  static Future<Map<String, dynamic>?> createTransaction(Map<String, dynamic> data) async {
-    final response = await client.from('transactions').insert(data).select().single();
+  static Future<Map<String, dynamic>?> createTransaction(
+      Map<String, dynamic> data) async {
+    final response =
+        await client.from('transactions').insert(data).select().single();
     return response;
   }
 
@@ -114,7 +149,8 @@ class SupabaseService {
       }
 
       final fromSymbol = t['from_currency']?['symbol'] as String?;
-      final fromAmount = double.tryParse(t['from_amount']?.toString() ?? '0') ?? 0;
+      final fromAmount =
+          double.tryParse(t['from_amount']?.toString() ?? '0') ?? 0;
       if (fromSymbol != null) {
         portfolio[fromSymbol] = (portfolio[fromSymbol] ?? 0) - fromAmount;
       }
@@ -132,8 +168,10 @@ class SupabaseService {
     return List<Map<String, dynamic>>.from(response);
   }
 
-  static Future<Map<String, dynamic>?> createNotification(Map<String, dynamic> data) async {
-    final response = await client.from('notifications').insert(data).select().single();
+  static Future<Map<String, dynamic>?> createNotification(
+      Map<String, dynamic> data) async {
+    final response =
+        await client.from('notifications').insert(data).select().single();
     return response;
   }
 
@@ -157,10 +195,8 @@ class SupabaseService {
 
   // --- Admin Stats ---
   static Future<Map<String, dynamic>> getAdminStats() async {
-    final orderCount = await client
-        .from('transactions')
-        .select('id')
-        .count(CountOption.exact);
+    final orderCount =
+        await client.from('transactions').select('id').count(CountOption.exact);
 
     final currencyCount = await client
         .from('currencies')

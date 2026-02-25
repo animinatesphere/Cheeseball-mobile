@@ -182,7 +182,7 @@ class AwaitingDeposit extends StatelessWidget {
                           onPressed: () {
                             Clipboard.setData(const ClipboardData(text: addr));
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Copied!')));
+                                const SnackBar(content: Text("Got it! The address is copied to your clipboard.")));
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primaryBlue,

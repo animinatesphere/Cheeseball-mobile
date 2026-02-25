@@ -12,6 +12,8 @@ import 'package:cheeseball/screens/user/landing_page.dart';
 import 'package:cheeseball/screens/user/currency_page.dart';
 import 'package:cheeseball/screens/admin/pages/admin_login.dart';
 import 'package:cheeseball/screens/admin/pages/admin_dashboard.dart';
+import 'package:cheeseball/screens/auth/forgot_password_screen.dart';
+import 'package:cheeseball/screens/auth/reset_password_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +43,11 @@ class CheeseballApp extends StatelessWidget {
         '/admin-login': (context) => const AdminLogin(),
         '/admin-dashboard': (context) => const AdminDashboard(),
         '/signup': (context) => const SignupScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+        '/reset-password': (context) {
+          final email = ModalRoute.of(context)!.settings.arguments as String;
+          return ResetPasswordScreen(email: email);
+        },
       },
     );
   }

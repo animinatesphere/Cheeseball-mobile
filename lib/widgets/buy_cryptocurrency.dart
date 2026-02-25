@@ -31,6 +31,11 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
     {'symbol': 'GBP', 'icon': '£'}
   ];
 
+  bool get _canProceed {
+    final v = double.tryParse(_sendCtrl.text);
+    return v != null && v > 0 && _recvCtrl.text.isNotEmpty;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -39,7 +44,6 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
 
   Future<void> _fetch() async {
     final d = await SupabaseService.getCurrencies();
-    // Deduplicate by symbol
     final seen = <String>{};
     final deduped = d.where((c) {
       final sym = c['symbol'] as String?;
@@ -49,7 +53,6 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
     }).toList();
     setState(() {
       _currencies = deduped;
-      // Set to first currency if exists, otherwise keep defaults
       if (deduped.isNotEmpty) {
         _toCurrency = deduped[0]['symbol'] as String? ?? 'BTC';
       }
@@ -66,12 +69,14 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
 
   void _calc() {
     final v = double.tryParse(_sendCtrl.text);
-    if (v == null) {
-      _recvCtrl.text = '';
+    if (v == null || v <= 0) {
+      setState(() => _recvCtrl.text = '');
       return;
     }
     final fp = _getPrice(_fromCurrency), tp = _getPrice(_toCurrency);
-    if (fp > 0 && tp > 0) _recvCtrl.text = (v * fp / tp).toStringAsFixed(6);
+    if (fp > 0 && tp > 0) {
+      setState(() => _recvCtrl.text = (v * fp / tp).toStringAsFixed(6));
+    }
   }
 
   @override
@@ -108,6 +113,7 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
       Padding(
           padding: const EdgeInsets.all(24),
           child: Column(children: [
+            // Tab switcher
             Container(
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
@@ -139,6 +145,7 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
                                       color: AppTheme.gray500))))),
                 ])),
             const SizedBox(height: 24),
+            // Form
             Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -146,6 +153,7 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
                     borderRadius: BorderRadius.circular(40),
                     border: Border.all(color: AppTheme.gray100)),
                 child: Column(children: [
+                  // YOU PAY row
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -164,48 +172,40 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
                       ]),
                   const SizedBox(height: 12),
                   Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                           color: AppTheme.white,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: AppTheme.gray100)),
                       child: Row(children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                                color: AppTheme.gray50,
-                                borderRadius: BorderRadius.circular(16)),
-                            child: DropdownButton<String>(
-                              value: _fromCurrency,
-                              underline: const SizedBox(),
-                              isDense: true,
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16,
-                                  color: AppTheme.gray900),
-                              items: _fiats
-                                  .map((c) => DropdownMenuItem(
-                                      value: c['symbol'] as String,
-                                      child: Text(c['symbol'] as String)))
-                                  .toList(),
-                              onChanged: (v) {
-                                if (v != null) {
-                                  setState(() {
-                                    _fromCurrency = v;
-                                    _calc();
-                                  });
-                                }
-                              },
-                            )),
+                        DropdownButton<String>(
+                          value: _fromCurrency,
+                          underline: const SizedBox(),
+                          isDense: true,
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                              color: AppTheme.gray900),
+                          items: _fiats
+                              .map((c) => DropdownMenuItem(
+                                  value: c['symbol'] as String,
+                                  child: Text(c['symbol'] as String)))
+                              .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              setState(() {
+                                _fromCurrency = v;
+                                _calc();
+                              });
+                            }
+                          },
+                        ),
                         Expanded(
                             child: TextField(
                                 controller: _sendCtrl,
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.right,
-                                onChanged: (_) {
-                                  _calc();
-                                },
+                                onChanged: (_) => _calc(),
                                 decoration: const InputDecoration(
                                     hintText: '0.00',
                                     border: InputBorder.none,
@@ -227,43 +227,54 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
                       child: const Icon(LucideIcons.arrowUpDown,
                           color: AppTheme.blue600, size: 24)),
                   const SizedBox(height: 16),
-                  Text('YOU RECEIVE', style: AppTheme.labelXS),
+                  // YOU RECEIVE row
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('YOU RECEIVE', style: AppTheme.labelXS),
+                        if (_recvCtrl.text.isNotEmpty)
+                          Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
+                              decoration: BoxDecoration(
+                                  color: AppTheme.green50,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Text('≈ ${_recvCtrl.text} $_toCurrency',
+                                  style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppTheme.green500))),
+                      ]),
                   const SizedBox(height: 12),
                   Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                           color: AppTheme.white,
                           borderRadius: BorderRadius.circular(24),
                           border: Border.all(color: AppTheme.gray100)),
                       child: Row(children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                                color: AppTheme.gray50,
-                                borderRadius: BorderRadius.circular(16)),
-                            child: DropdownButton<String>(
-                              value: _toCurrency,
-                              underline: const SizedBox(),
-                              isDense: true,
-                              style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16,
-                                  color: AppTheme.gray900),
-                              items: _currencies
-                                  .map((c) => DropdownMenuItem(
-                                      value: c['symbol'] as String,
-                                      child: Text(c['symbol'] as String)))
-                                  .toList(),
-                              onChanged: (v) {
-                                if (v != null) {
-                                  setState(() {
-                                    _toCurrency = v;
-                                    _calc();
-                                  });
-                                }
-                              },
-                            )),
+                        DropdownButton<String>(
+                          value: _toCurrency,
+                          underline: const SizedBox(),
+                          isDense: true,
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                              color: AppTheme.gray900),
+                          items: _currencies
+                              .map((c) => DropdownMenuItem(
+                                  value: c['symbol'] as String,
+                                  child: Text(c['symbol'] as String)))
+                              .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              setState(() {
+                                _toCurrency = v;
+                                _calc();
+                              });
+                            }
+                          },
+                        ),
                         Expanded(
                             child: TextField(
                                 controller: _recvCtrl,
@@ -282,22 +293,25 @@ class _BuyCryptocurrencyState extends State<BuyCryptocurrency> {
                   SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {
-                            final tc = _currencies.firstWhere(
-                                (c) => c['symbol'] == _toCurrency,
-                                orElse: () => {});
-                            widget.onExchange({
-                              'type': 'buy',
-                              'fromAmount': _sendCtrl.text,
-                              'fromCurrency': _fromCurrency,
-                              'toAmount': _recvCtrl.text,
-                              'toCurrency': _toCurrency,
-                              'toCurrencyId': tc['id'],
-                              'toCurrencyIcon': tc['icon_url']
-                            });
-                          },
+                          onPressed: _canProceed
+                              ? () {
+                                  final tc = _currencies.firstWhere(
+                                      (c) => c['symbol'] == _toCurrency,
+                                      orElse: () => {});
+                                  widget.onExchange({
+                                    'type': 'buy',
+                                    'fromAmount': _sendCtrl.text,
+                                    'fromCurrency': _fromCurrency,
+                                    'toAmount': _recvCtrl.text,
+                                    'toCurrency': _toCurrency,
+                                    'toCurrencyId': tc['id'],
+                                    'toCurrencyIcon': tc['icon_url']
+                                  });
+                                }
+                              : null,
                           style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primaryBlue,
+                              disabledBackgroundColor: AppTheme.blue200,
                               foregroundColor: AppTheme.white,
                               padding: const EdgeInsets.symmetric(vertical: 22),
                               shape: RoundedRectangleBorder(

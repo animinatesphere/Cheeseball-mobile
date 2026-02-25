@@ -24,9 +24,9 @@ class _BuyCryptoAddressState extends State<BuyCryptoAddress> {
       Padding(padding: const EdgeInsets.all(24), child: Column(children: [
         Container(padding: const EdgeInsets.all(24), decoration: BoxDecoration(color: AppTheme.blue600, borderRadius: BorderRadius.circular(40), boxShadow: AppTheme.shadowBlue),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('YOU PAY', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['fromAmount'] ?? '0'} ${td['fromCurrency'] ?? 'NGN'}', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: AppTheme.white))]),
+            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('YOU PAY', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['fromAmount'] ?? '0'} ${td['fromCurrency'] ?? 'NGN'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.white))])),
             const Icon(LucideIcons.arrowRight, color: AppTheme.blue200),
-            Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text('YOU GET', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['toAmount'] ?? '0'} ${td['toCurrency'] ?? 'BTC'}', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: AppTheme.white))]),
+            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text('YOU GET', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['toAmount'] ?? '0'} ${td['toCurrency'] ?? 'BTC'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.white))])),
           ])),
         const SizedBox(height: 24),
         Container(padding: const EdgeInsets.all(28), decoration: BoxDecoration(color: AppTheme.white, borderRadius: BorderRadius.circular(40), border: Border.all(color: AppTheme.gray100), boxShadow: AppTheme.shadowLG),
@@ -34,12 +34,33 @@ class _BuyCryptoAddressState extends State<BuyCryptoAddress> {
             Text('Recipient Address', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900, color: AppTheme.gray900)),
             const SizedBox(height: 24),
             Text('${td['toCurrency'] ?? 'Bitcoin'} ADDRESS', style: AppTheme.labelXS), const SizedBox(height: 12),
-            TextField(controller: _ctrl, decoration: InputDecoration(hintText: 'Enter ${td['toCurrency'] ?? '₿'} address here...', suffixIcon: IconButton(icon: const Icon(LucideIcons.clipboard, color: AppTheme.primaryBlue), onPressed: () async { final d = await Clipboard.getData('text/plain'); if (d?.text != null) _ctrl.text = d!.text!; }))),
+            TextField(
+              controller: _ctrl,
+              onChanged: (v) => setState(() {}),
+              decoration: InputDecoration(
+                hintText: 'Enter ${td['toCurrency'] ?? '₿'} address here...',
+                suffixIcon: IconButton(
+                  icon: const Icon(LucideIcons.clipboard, color: AppTheme.primaryBlue),
+                  onPressed: () async {
+                    final d = await Clipboard.getData('text/plain');
+                    if (d?.text != null) {
+                      setState(() => _ctrl.text = d!.text!);
+                    }
+                  },
+                ),
+                filled: true,
+                fillColor: AppTheme.gray50,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppTheme.blue100, width: 2)),
+              ),
+              style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.gray900),
+            ),
             const SizedBox(height: 16),
             Container(padding: const EdgeInsets.all(20), decoration: BoxDecoration(color: AppTheme.orange50, borderRadius: BorderRadius.circular(24), border: Border.all(color: const Color(0xFFFED7AA))),
               child: Row(children: [const Icon(LucideIcons.alertCircle, color: AppTheme.orange600, size: 18), const SizedBox(width: 12), Expanded(child: Text('Please ensure the recipient address is correct. Cryptocurrency transfers are irreversible.', style: GoogleFonts.inter(fontSize: 11, color: const Color(0xFF9A3412), fontWeight: FontWeight.w500)))])),
             const SizedBox(height: 24),
-            SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _ctrl.text.isEmpty ? null : () => widget.onCreateExchange(_ctrl.text),
+            SizedBox(width: double.infinity, child: ElevatedButton(
+              onPressed: _ctrl.text.trim().isEmpty ? null : () => widget.onCreateExchange(_ctrl.text.trim()),
               style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue, foregroundColor: AppTheme.white, padding: const EdgeInsets.symmetric(vertical: 22), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)), disabledBackgroundColor: AppTheme.blue200),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text('Create Order', style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18)), const SizedBox(width: 8), const Icon(LucideIcons.arrowRight, size: 20)]))),
           ])),
