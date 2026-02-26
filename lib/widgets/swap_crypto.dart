@@ -235,18 +235,21 @@ class _SwapCryptoState extends State<SwapCrypto> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('SWAP TO', style: AppTheme.labelXS),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 4),
-                            decoration: BoxDecoration(
-                                color: AppTheme.gray100,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Text(
-                                'Est. Price: 1 $_fromCurrency ≈ ... $_toCurrency',
-                                style: GoogleFonts.inter(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.gray400))),
+                        Flexible(
+                            child: Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
+                                decoration: BoxDecoration(
+                                    color: AppTheme.gray100,
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Text(
+                                    'Est. Price: 1 $_fromCurrency ≈ ... $_toCurrency',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppTheme.gray400)))),
                         if (_toCtrl.text.isNotEmpty)
                           Container(
                               padding: const EdgeInsets.symmetric(

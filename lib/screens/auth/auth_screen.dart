@@ -14,6 +14,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _loading = false;
+  bool _obscurePassword = true;
   String? _error;
 
   Future<void> _handleSignIn() async {
@@ -138,11 +139,21 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(height: 8),
                         TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             hintText: 'Enter your password',
                             prefixIcon: const Icon(LucideIcons.lock,
                                 color: AppTheme.gray400, size: 20),
+                            suffixIcon: GestureDetector(
+                              onTap: () => setState(() =>
+                                  _obscurePassword = !_obscurePassword),
+                              child: Icon(
+                                  _obscurePassword
+                                      ? LucideIcons.eyeOff
+                                      : LucideIcons.eye,
+                                  color: AppTheme.gray400,
+                                  size: 20),
+                            ),
                             filled: true,
                             fillColor: AppTheme.gray50,
                             border: OutlineInputBorder(

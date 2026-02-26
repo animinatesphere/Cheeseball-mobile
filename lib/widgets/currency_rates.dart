@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cheeseball/theme/app_theme.dart';
 import 'package:cheeseball/services/supabase_service.dart';
+import 'package:cheeseball/widgets/notification_sheet.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -96,7 +97,12 @@ class _CurrencyRatesState extends State<CurrencyRates> {
                                   fontWeight: FontWeight.w500)),
                         ]),
                     GestureDetector(
-                      onTap: () => widget.onNavigate('alert-rates'),
+                      onTap: () => showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const NotificationSheet(),
+                      ),
                       child: Container(
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(

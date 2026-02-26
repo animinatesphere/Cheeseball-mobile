@@ -120,6 +120,7 @@ class _ConfirmSwapState extends State<ConfirmSwap> {
           const SizedBox(height: 12),
           TextField(
               controller: _addressCtrl,
+              onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                   hintText: 'Enter ${td['toCurrency']} address...',
                   suffixIcon: IconButton(
@@ -127,7 +128,9 @@ class _ConfirmSwapState extends State<ConfirmSwap> {
                           color: AppTheme.primaryBlue),
                       onPressed: () async {
                         final d = await Clipboard.getData('text/plain');
-                        if (d?.text != null) _addressCtrl.text = d!.text!;
+                        if (d?.text != null) {
+                          setState(() => _addressCtrl.text = d!.text!);
+                        }
                       }))),
           const SizedBox(height: 8),
           Text(
