@@ -14,6 +14,12 @@ import 'package:cheeseball/screens/admin/pages/admin_login.dart';
 import 'package:cheeseball/screens/admin/pages/admin_dashboard.dart';
 import 'package:cheeseball/screens/auth/forgot_password_screen.dart';
 import 'package:cheeseball/screens/auth/reset_password_screen.dart';
+import 'package:cheeseball/screens/user/swap_screen.dart';
+import 'package:cheeseball/screens/user/dashboard_screen.dart';
+import 'package:cheeseball/screens/user/gift_card_hub.dart';
+import 'package:cheeseball/screens/user/invoice_screen.dart';
+import 'package:cheeseball/screens/user/bill_payment_screen.dart';
+import 'package:cheeseball/screens/user/payout_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,9 +36,16 @@ class CheeseballApp extends StatelessWidget {
       title: 'Cheeseball',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: '/',
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
+      initialRoute: '/dashboard',
       routes: {
         '/': (context) => const LandingPage(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/giftcard': (context) => const GiftCardHub(),
+        '/invoice': (context) => const InvoiceScreen(),
+        '/bills': (context) => const BillPaymentScreen(),
+        '/payout': (context) => const PayoutScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         '/buy-crypto': (context) => const BuyCryptoIntro(),
@@ -48,6 +61,7 @@ class CheeseballApp extends StatelessWidget {
           final email = ModalRoute.of(context)!.settings.arguments as String;
           return ResetPasswordScreen(email: email);
         },
+        '/swap': (context) => const SwapScreen(),
       },
     );
   }

@@ -8,7 +8,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.white,
+      backgroundColor: AppTheme.darkBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -19,7 +19,7 @@ class WelcomeScreen extends StatelessWidget {
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(LucideIcons.arrowLeft,
-                      color: AppTheme.gray900, size: 24),
+                      color: AppTheme.darkText, size: 24),
                 ),
               ),
             ),
@@ -27,87 +27,99 @@ class WelcomeScreen extends StatelessWidget {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 48),
-                    decoration: BoxDecoration(
-                        color: AppTheme.white,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: AppTheme.blue100,
-                              blurRadius: 32,
-                              offset: Offset(0, 12))
-                        ]),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 12),
-                            decoration: BoxDecoration(
-                                color: AppTheme.blue50,
-                                borderRadius: BorderRadius.circular(16)),
-                            child: Text('CHEESEBALL',
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w900,
-                                    color: AppTheme.primaryBlue,
-                                    fontSize: 22))),
-                        const SizedBox(height: 48),
-                        Text('Log in as',
-                            style: GoogleFonts.inter(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                color: AppTheme.gray800)),
-                        const SizedBox(height: 48),
-                        SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                                onPressed: () =>
-                                    Navigator.pushNamed(context, '/auth'),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppTheme.primaryBlue,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16)),
-                                    elevation: 8,
-                                    shadowColor: AppTheme.blue200),
-                                child: Text('User',
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: AppTheme.white)))),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                                onPressed: () => Navigator.pushNamed(
-                                    context, '/admin-login'),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppTheme.gray100,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16)),
-                                    elevation: 0),
-                                child: Text('Admin',
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
-                                        color: AppTheme.primaryBlue)))),
-                        const SizedBox(height: 48),
-                        Text('Secure • Fast • Reliable',
-                            style: GoogleFonts.inter(
-                                color: AppTheme.gray400,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 16),
+                          decoration: BoxDecoration(
+                              color: AppTheme.darkSurface,
+                              borderRadius: BorderRadius.circular(AppTheme.radiusMD),
+                              border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.2))),
+                          child: Text('CHEESEBALL',
+                              style: GoogleFonts.outfit(
+                                  fontWeight: FontWeight.w900,
+                                  color: AppTheme.accentGold,
+                                  letterSpacing: 2,
+                                  fontSize: 24))),
+                      const SizedBox(height: 64),
+                      Text('Continue as',
+                          style: GoogleFonts.outfit(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.darkText)),
+                      const SizedBox(height: 48),
+                      _buildRoleButton(
+                        context: context,
+                        label: 'Standard User',
+                        icon: LucideIcons.user,
+                        onPressed: () => Navigator.pushNamed(context, '/auth'),
+                        isPrimary: true,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildRoleButton(
+                        context: context,
+                        label: 'Administrator',
+                        icon: LucideIcons.shield,
+                        onPressed: () => Navigator.pushNamed(context, '/admin-login'),
+                        isPrimary: false,
+                      ),
+                      const SizedBox(height: 64),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(LucideIcons.lock, size: 14, color: AppTheme.darkTextSecondary),
+                          const SizedBox(width: 8),
+                          Text('Secure • Fast • Reliable',
+                              style: GoogleFonts.inter(
+                                  color: AppTheme.darkTextSecondary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoleButton({
+    required BuildContext context,
+    required String label,
+    required IconData icon,
+    required VoidCallback onPressed,
+    required bool isPrimary,
+  }) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isPrimary ? AppTheme.accentGold : AppTheme.darkSurface,
+          foregroundColor: isPrimary ? AppTheme.darkBg : AppTheme.darkText,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+          elevation: isPrimary ? 8 : 0,
+          side: isPrimary ? BorderSide.none : const BorderSide(color: AppTheme.darkHighlight, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.radiusMD),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
               ),
             ),
           ],

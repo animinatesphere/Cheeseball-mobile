@@ -11,6 +11,15 @@ class AppTheme {
   static const Color blue100 = Color(0xFFDBEAFE);
   static const Color blue200 = Color(0xFFBFDBFE);
 
+  // Bybit-inspired Dark Theme Colors
+  static const Color darkBg = Color(0xFF0B0E11);
+  static const Color darkSurface = Color(0xFF181A20);
+  static const Color darkCard = Color(0xFF1E2329);
+  static const Color darkHighlight = Color(0xFF2B3139);
+  static const Color accentGold = Color(0xFFFFB11A);
+  static const Color darkText = Color(0xFFEAECEF);
+  static const Color darkTextSecondary = Color(0xFF848E9C);
+
   static const Color green500 = Color(0xFF22C55E);
   static const Color green600 = Color(0xFF16A34A);
   static const Color green50 = Color(0xFFF0FDF4);
@@ -50,29 +59,35 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [accentGold, Color(0xFFFFD166)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // Text Styles
-  static TextStyle get headingXL => GoogleFonts.inter(
+  static TextStyle get headingXL => GoogleFonts.outfit(
         fontSize: 40,
         fontWeight: FontWeight.w900,
         color: gray900,
         letterSpacing: -1.0,
       );
 
-  static TextStyle get headingLG => GoogleFonts.inter(
+  static TextStyle get headingLG => GoogleFonts.outfit(
         fontSize: 32,
         fontWeight: FontWeight.w900,
         color: gray900,
         letterSpacing: -0.5,
       );
 
-  static TextStyle get headingMD => GoogleFonts.inter(
+  static TextStyle get headingMD => GoogleFonts.outfit(
         fontSize: 24,
         fontWeight: FontWeight.w900,
         color: gray900,
         letterSpacing: -0.3,
       );
 
-  static TextStyle get headingSM => GoogleFonts.inter(
+  static TextStyle get headingSM => GoogleFonts.outfit(
         fontSize: 20,
         fontWeight: FontWeight.w900,
         color: gray900,
@@ -125,15 +140,14 @@ class AppTheme {
   static const double radiusXS = 8;
   static const double radiusSM = 12;
   static const double radiusMD = 16;
-  static const double radiusLG = 24;
-  static const double radiusXL = 32;
-  static const double radius2XL = 40;
-  static const double radius3XL = 48;
+  static const double radiusLG = 20;
+  static const double radiusXL = 24;
+  static const double radius2XL = 32;
 
   // Shadows
   static List<BoxShadow> get shadowSM => [
         BoxShadow(
-          color: gray900.withValues(alpha: 0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -141,36 +155,21 @@ class AppTheme {
 
   static List<BoxShadow> get shadowMD => [
         BoxShadow(
-          color: gray900.withValues(alpha: 0.08),
+          color: Colors.black.withValues(alpha: 0.08),
           blurRadius: 16,
           offset: const Offset(0, 4),
-        ),
-      ];
-
-  static List<BoxShadow> get shadowLG => [
-        BoxShadow(
-          color: gray900.withValues(alpha: 0.12),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
-        ),
-      ];
-
-  static List<BoxShadow> get shadowBlue => [
-        BoxShadow(
-          color: blue600.withValues(alpha: 0.25),
-          blurRadius: 24,
-          offset: const Offset(0, 8),
         ),
       ];
 
   // ThemeData
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
-        primaryColor: primaryBlue,
+        primaryColor: accentGold,
         scaffoldBackgroundColor: white,
         colorScheme: const ColorScheme.light(
-          primary: primaryBlue,
-          secondary: blue600,
+          primary: accentGold,
+          onPrimary: darkBg,
+          secondary: accentGold,
           surface: white,
           error: red500,
         ),
@@ -178,45 +177,90 @@ class AppTheme {
         appBarTheme: AppBarTheme(
           backgroundColor: white,
           elevation: 0,
-          titleTextStyle: GoogleFonts.inter(
+          titleTextStyle: GoogleFonts.outfit(
             fontSize: 20,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             color: gray900,
           ),
           iconTheme: const IconThemeData(color: gray900),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: primaryBlue,
-            foregroundColor: white,
+            backgroundColor: accentGold,
+            foregroundColor: darkBg,
             elevation: 0,
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radiusLG),
+              borderRadius: BorderRadius.circular(radiusSM),
             ),
             textStyle: GoogleFonts.inter(
               fontSize: 16,
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      );
+
+  static ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: accentGold,
+        scaffoldBackgroundColor: darkBg,
+        cardColor: darkCard,
+        colorScheme: const ColorScheme.dark(
+          primary: accentGold,
+          onPrimary: darkBg,
+          secondary: accentGold,
+          surface: darkSurface,
+          error: red500,
+          onSurface: darkText,
+        ),
+        textTheme: GoogleFonts.interTextTheme().apply(
+          bodyColor: darkText,
+          displayColor: darkText,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: darkBg,
+          elevation: 0,
+          titleTextStyle: GoogleFonts.outfit(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: darkText,
+          ),
+          iconTheme: const IconThemeData(color: darkText),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: accentGold,
+            foregroundColor: darkBg,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radiusSM),
+            ),
+            textStyle: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: gray50,
+          fillColor: darkSurface,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radiusLG),
+            borderRadius: BorderRadius.circular(radiusSM),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(radiusLG),
-            borderSide: const BorderSide(color: blue100, width: 2),
+            borderRadius: BorderRadius.circular(radiusSM),
+            borderSide: const BorderSide(color: accentGold, width: 1.5),
           ),
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           hintStyle: GoogleFonts.inter(
-            color: gray300,
-            fontWeight: FontWeight.w700,
+            color: darkTextSecondary,
+            fontWeight: FontWeight.w400,
           ),
         ),
       );
+
 }

@@ -44,7 +44,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.white,
+      backgroundColor: AppTheme.darkBg,
       body: SafeArea(
         child: Column(
           children: [
@@ -55,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(LucideIcons.arrowLeft,
-                      color: AppTheme.gray900, size: 24),
+                      color: AppTheme.darkText, size: 24),
                 ),
               ),
             ),
@@ -63,225 +63,189 @@ class _AuthScreenState extends State<AuthScreen> {
               child: Center(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(24),
-                  child: Container(
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      color: AppTheme.white,
-                      borderRadius: BorderRadius.circular(40),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: AppTheme.blue100,
-                            blurRadius: 32,
-                            offset: Offset(0, 12))
-                      ],
-                      border: Border.all(color: AppTheme.blue50),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Logo
-                        Image.asset(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Logo
+                      Hero(
+                        tag: 'app_logo',
+                        child: Image.asset(
                           'assets/CHEESEBALL 1-KDr6TQXM.png',
-                          height: 48,
+                          height: 60,
                           fit: BoxFit.contain,
                         ),
-                        const SizedBox(height: 40),
-                        // Title
-                        Text(
-                          'Secure Login',
-                          style: GoogleFonts.inter(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: AppTheme.gray900,
-                              letterSpacing: -0.3),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Enter your credentials to access your account',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                              fontSize: 14,
-                              color: AppTheme.gray500,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 32),
+                      ),
+                      const SizedBox(height: 48),
+                      // Title
+                      Text(
+                        'Welcome Back',
+                        style: GoogleFonts.outfit(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            color: AppTheme.darkText,
+                            letterSpacing: -0.5),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Secure login to your Cheeseball account',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                            fontSize: 14,
+                            color: AppTheme.darkTextSecondary,
+                            fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 40),
 
-                        // Email input
-                        Text('EMAIL ADDRESS', style: AppTheme.labelXS),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: 'name@example.com',
-                            prefixIcon: const Icon(LucideIcons.mail,
-                                color: AppTheme.gray400, size: 20),
-                            filled: true,
-                            fillColor: AppTheme.gray50,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                    color: AppTheme.blue100, width: 2)),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
-                          ),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.gray900),
+                      // Email input
+                      _buildLabel('EMAIL ADDRESS'),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText: 'name@example.com',
+                          prefixIcon: const Icon(LucideIcons.mail,
+                              color: AppTheme.darkTextSecondary, size: 20),
                         ),
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.darkText),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Password input
+                      _buildLabel('PASSWORD'),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          hintText: 'Enter your password',
+                          prefixIcon: const Icon(LucideIcons.lock,
+                              color: AppTheme.darkTextSecondary, size: 20),
+                          suffixIcon: GestureDetector(
+                            onTap: () => setState(() =>
+                                _obscurePassword = !_obscurePassword),
+                            child: Icon(
+                                _obscurePassword
+                                    ? LucideIcons.eyeOff
+                                    : LucideIcons.eye,
+                                color: AppTheme.darkTextSecondary,
+                                size: 20),
+                          ),
+                        ),
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.darkText),
+                      ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () => Navigator.pushNamed(
+                              context, '/forgot-password'),
+                          child: Text('Forgot Password?',
+                              style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.accentGold)),
+                        ),
+                      ),
+
+                      // Error
+                      if (_error != null) ...[
                         const SizedBox(height: 20),
-
-                        // Password input
-                        Text('PASSWORD', style: AppTheme.labelXS),
-                        const SizedBox(height: 8),
-                        TextField(
-                          controller: _passwordController,
-                          obscureText: _obscurePassword,
-                          decoration: InputDecoration(
-                            hintText: 'Enter your password',
-                            prefixIcon: const Icon(LucideIcons.lock,
-                                color: AppTheme.gray400, size: 20),
-                            suffixIcon: GestureDetector(
-                              onTap: () => setState(() =>
-                                  _obscurePassword = !_obscurePassword),
-                              child: Icon(
-                                  _obscurePassword
-                                      ? LucideIcons.eyeOff
-                                      : LucideIcons.eye,
-                                  color: AppTheme.gray400,
-                                  size: 20),
-                            ),
-                            filled: true,
-                            fillColor: AppTheme.gray50,
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: BorderSide.none),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(
-                                    color: AppTheme.blue100, width: 2)),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 20),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                              color: AppTheme.red500.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(AppTheme.radiusSM),
+                              border:
+                                  Border.all(color: AppTheme.red500.withValues(alpha: 0.2))),
+                          child: Row(
+                            children: [
+                              const Icon(LucideIcons.alertCircle, color: AppTheme.red500, size: 18),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                  child: Text(_error!,
+                                      style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppTheme.red500))),
+                            ],
                           ),
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.gray900),
                         ),
-                        const SizedBox(height: 12),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () => Navigator.pushNamed(
-                                context, '/forgot-password'),
-                            child: Text('Forgot Password?',
+                      ],
+
+                      const SizedBox(height: 48),
+
+                      // Submit Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _loading ? null : _handleSignIn,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.accentGold,
+                            foregroundColor: AppTheme.darkBg,
+                            disabledBackgroundColor: AppTheme.darkHighlight,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(AppTheme.radiusSM)),
+                          ),
+                          child: _loading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                      color: AppTheme.darkBg, strokeWidth: 3))
+                              : Text('Sign In',
+                                  style: GoogleFonts.inter(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18)),
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("New to Cheeseball? ",
+                              style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w400,
+                                  color: AppTheme.darkTextSecondary)),
+                          GestureDetector(
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/signup'),
+                            child: Text('Register',
                                 style: GoogleFonts.inter(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppTheme.blue600)),
-                          ),
-                        ),
-
-                        // Error
-                        if (_error != null) ...[
-                          const SizedBox(height: 16),
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                                color: AppTheme.red50,
-                                borderRadius: BorderRadius.circular(12),
-                                border:
-                                    Border.all(color: const Color(0xFFFEE2E2))),
-                            child: Row(
-                              children: [
-                                Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                        color: AppTheme.red500,
-                                        shape: BoxShape.circle)),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                    child: Text(_error!,
-                                        style: GoogleFonts.inter(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                            color: AppTheme.red600))),
-                              ],
-                            ),
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.accentGold)),
                           ),
                         ],
-
-                        const SizedBox(height: 24),
-
-                        // Submit Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _loading ? null : _handleSignIn,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.blue600,
-                              disabledBackgroundColor: AppTheme.blue200,
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              elevation: 8,
-                              shadowColor: AppTheme.blue200,
-                            ),
-                            child: _loading
-                                ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                        color: AppTheme.white, strokeWidth: 3))
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text('Sign In',
-                                          style: GoogleFonts.inter(
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 16,
-                                              color: AppTheme.white)),
-                                      const SizedBox(width: 8),
-                                      const Icon(LucideIcons.arrowRight,
-                                          size: 18, color: AppTheme.white),
-                                    ],
-                                  ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Don't have an account? ",
-                                style: GoogleFonts.inter(
-                                    fontWeight: FontWeight.w500,
-                                    color: AppTheme.gray600)),
-                            GestureDetector(
-                              onTap: () =>
-                                  Navigator.pushNamed(context, '/signup'),
-                              child: Text('Create Account',
-                                  style: GoogleFonts.inter(
-                                      fontWeight: FontWeight.w900,
-                                      color: AppTheme.blue600)),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 32),
-                        const Divider(color: AppTheme.gray50),
-                        const SizedBox(height: 16),
-                        Text('SECURED BY SUPABASE INFRASTRUCTURE',
-                            style: AppTheme.labelXS),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 48),
+                      Text('SECURED BY SUPABASE INFRASTRUCTURE',
+                          style: AppTheme.labelXS.copyWith(color: AppTheme.darkTextSecondary, fontSize: 10)),
+                    ],
                   ),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: AppTheme.labelXS.copyWith(
+          color: AppTheme.darkTextSecondary,
+          letterSpacing: 1.2,
+          fontSize: 11,
         ),
       ),
     );
