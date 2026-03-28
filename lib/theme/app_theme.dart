@@ -161,6 +161,14 @@ class AppTheme {
         ),
       ];
 
+  static List<BoxShadow> get shadowLG => [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.12),
+          blurRadius: 32,
+          offset: const Offset(0, 12),
+        ),
+      ];
+
   // ThemeData
   static ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,

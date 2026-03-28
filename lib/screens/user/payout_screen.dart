@@ -111,7 +111,7 @@ class _PayoutScreenState extends State<PayoutScreen> {
           controller: _amountController,
           keyboardType: TextInputType.number,
           style: AppTheme.headingMD.copyWith(color: AppTheme.darkText),
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             hintText: 'Minimum ₦1,000',
             hintStyle: TextStyle(color: AppTheme.darkHighlight),
             suffixText: 'NAIRA',

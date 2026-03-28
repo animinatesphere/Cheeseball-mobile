@@ -245,7 +245,7 @@ class _SwapScreenState extends State<SwapScreen> {
     return ListTile(
       leading: Container(
         padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppTheme.darkSurface,
           shape: BoxShape.circle,
         ),

@@ -22,14 +22,14 @@ class _BuyCryptoAddressState extends State<BuyCryptoAddress> {
         const SizedBox(height: 16), Text('Delivery Address', style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.w900, color: AppTheme.white)), Text('Where should we send your assets?', style: GoogleFonts.inter(color: AppTheme.blue200)),
       ])),
       Padding(padding: const EdgeInsets.all(24), child: Column(children: [
-        Container(padding: const EdgeInsets.all(24), decoration: BoxDecoration(color: AppTheme.blue600, borderRadius: BorderRadius.circular(40), boxShadow: AppTheme.shadowBlue),
+        Container(padding: const EdgeInsets.all(24), decoration: BoxDecoration(color: AppTheme.accentGold, borderRadius: BorderRadius.circular(40), boxShadow: AppTheme.shadowLG),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('YOU PAY', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['fromAmount'] ?? '0'} ${td['fromCurrency'] ?? 'NGN'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.white))])),
+            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('YOU PAY', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['fromAmount'] ?? '0'} ${td['fromCurrency'] ?? 'NGN'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.darkSurface))])),
             const Icon(LucideIcons.arrowRight, color: AppTheme.blue200),
-            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text('YOU GET', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['toAmount'] ?? '0'} ${td['toCurrency'] ?? 'BTC'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.white))])),
+            Flexible(child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [Text('YOU GET', style: AppTheme.labelXS.copyWith(color: AppTheme.blue200)), Text('${td['toAmount'] ?? '0'} ${td['toCurrency'] ?? 'BTC'}', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: AppTheme.darkSurface))])),
           ])),
         const SizedBox(height: 24),
-        Container(padding: const EdgeInsets.all(28), decoration: BoxDecoration(color: AppTheme.white, borderRadius: BorderRadius.circular(40), border: Border.all(color: AppTheme.gray100), boxShadow: AppTheme.shadowLG),
+        Container(padding: const EdgeInsets.all(28), decoration: BoxDecoration(color: AppTheme.darkSurface, borderRadius: BorderRadius.circular(40), border: Border.all(color: AppTheme.gray100), boxShadow: AppTheme.shadowLG),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('Recipient Address', style: GoogleFonts.inter(fontSize: 24, fontWeight: FontWeight.w900, color: AppTheme.gray900)),
             const SizedBox(height: 24),

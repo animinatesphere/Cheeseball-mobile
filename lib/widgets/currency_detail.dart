@@ -95,7 +95,7 @@ class CurrencyDetail extends StatelessWidget {
             child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(32),
-                    boxShadow: AppTheme.shadowBlue),
+                    boxShadow: AppTheme.shadowMD),
                 child: ElevatedButton.icon(
                     onPressed: onExchange,
                     icon: const Icon(LucideIcons.arrowUpDown, size: 22),

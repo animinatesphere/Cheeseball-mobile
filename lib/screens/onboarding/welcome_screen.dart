@@ -30,19 +30,11 @@ class WelcomeScreen extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 16),
-                          decoration: BoxDecoration(
-                              color: AppTheme.darkSurface,
-                              borderRadius: BorderRadius.circular(AppTheme.radiusMD),
-                              border: Border.all(color: AppTheme.accentGold.withValues(alpha: 0.2))),
-                          child: Text('CHEESEBALL',
-                              style: GoogleFonts.outfit(
-                                  fontWeight: FontWeight.w900,
-                                  color: AppTheme.accentGold,
-                                  letterSpacing: 2,
-                                  fontSize: 24))),
+                      Image.asset(
+                        'assets/CHEESEBALL 1-KDr6TQXM.png',
+                        height: 60,
+                        fit: BoxFit.contain,
+                      ),
                       const SizedBox(height: 64),
                       Text('Continue as',
                           style: GoogleFonts.outfit(

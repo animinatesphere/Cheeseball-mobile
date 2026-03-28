@@ -315,7 +315,7 @@ class _SwapCryptoState extends State<SwapCrypto> {
                       child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(32),
-                              boxShadow: _canProceed ? AppTheme.shadowBlue : []),
+                              boxShadow: _canProceed ? AppTheme.shadowMD : []),
                           child: ElevatedButton(
                               onPressed: _canProceed
                                   ? () {

@@ -58,7 +58,7 @@ class _HomeView extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.darkBg,
       appBar: AppBar(
-        title: Text('CHEESEBALL', style: AppTheme.headingSM.copyWith(color: AppTheme.accentGold, letterSpacing: 2)),
+        title: Image.asset('assets/CHEESEBALL 1-KDr6TQXM.png', height: 28),
         centerTitle: false,
         actions: [
           IconButton(icon: const Icon(LucideIcons.bell), onPressed: () {}),
@@ -185,64 +185,66 @@ class _HomeView extends StatelessWidget {
   }
 
   Widget _buildLiveTickerHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Text('Market Trends', style: AppTheme.headingSM.copyWith(color: AppTheme.darkText)),
-        TextButton(
-          onPressed: () {},
-          child: Text('See All', style: AppTheme.bodySM.copyWith(color: AppTheme.accentGold)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Market Trends', style: AppTheme.headingSM.copyWith(color: AppTheme.darkText)),
+            TextButton(
+              onPressed: () {},
+              child: Text('See All', style: AppTheme.bodySM.copyWith(color: AppTheme.accentGold)),
+            ),
+          ],
         ),
+        const SizedBox(height: 8),
       ],
     );
   }
 
-  Widget _buildLiveTickerItem(String name, String symbol, String price, String change) {
-    bool isPositive = change.startsWith('+');
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppTheme.darkCard,
-        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
-        border: Border.all(color: AppTheme.darkHighlight, width: 1),
-      ),
-      child: Row(
+  Widget _buildMarketTabs() {
+    return DefaultTabController(
+      length: 4,
+      child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppTheme.darkSurface,
-              borderRadius: BorderRadius.circular(AppTheme.radiusSM),
-            ),
-            child: const Icon(LucideIcons.coins, color: AppTheme.accentGold),
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            indicatorColor: AppTheme.accentGold,
+            indicatorWeight: 3,
+            dividerColor: Colors.transparent,
+            labelColor: AppTheme.accentGold,
+            unselectedLabelColor: AppTheme.darkTextSecondary,
+            labelStyle: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 13),
+            tabs: const [
+              Tab(text: 'Hot'),
+              Tab(text: 'Gainers'),
+              Tab(text: 'New'),
+              Tab(text: '24h Vol'),
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 400, // Fixed height for the ticker list
+            child: TabBarView(
               children: [
-                Text(name, style: AppTheme.bodyMD.copyWith(color: AppTheme.darkText, fontWeight: FontWeight.bold)),
-                Text(symbol, style: AppTheme.bodyXS.copyWith(color: AppTheme.darkTextSecondary)),
+                _buildMarketList('hot'),
+                _buildMarketList('gainers'),
+                _buildMarketList('new'),
+                _buildMarketList('vol'),
               ],
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('\$$price', style: AppTheme.bodyMD.copyWith(color: AppTheme.darkText, fontWeight: FontWeight.bold)),
-              Text(
-                change,
-                style: AppTheme.bodyXS.copyWith(
-                  color: isPositive ? AppTheme.green500 : AppTheme.red500,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
-}
 
+  Widget _buildMarketList(String filter) {
+    // Mock data based on filter
+    List<Map<String, String>> data = [
+      {'name': 'Bitcoin', 'symbol': 'BTC/USDT', 'price': '65,432.10', 'change': '+2.45%'},
+      {'name': 'Ethereum', 'symbol': 'ETH/USDT', 'price': '3,456.78', 'change': '+1.12%'},
+      {'name': 'Solana', 'symbol': 'SOL/USDT', 'price': '145.20', 'change': '+5.12%'},
+      {'name': 'Binance Coin', 'symbol': 'BNB/USDT', 'price': '589.43', 'change': '-0.54%'},
+      {'name': 'Cardano', 'symbol

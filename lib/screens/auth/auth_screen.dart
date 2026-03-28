@@ -102,9 +102,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       TextField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'name@example.com',
-                          prefixIcon: const Icon(LucideIcons.mail,
+                          prefixIcon: Icon(LucideIcons.mail,
                               color: AppTheme.darkTextSecondary, size: 20),
                         ),
                         style: GoogleFonts.inter(
