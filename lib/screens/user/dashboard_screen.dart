@@ -77,10 +77,7 @@ class _HomeView extends StatelessWidget {
             const SizedBox(height: 40),
             _buildLiveTickerHeader(),
             const SizedBox(height: 16),
-            _buildLiveTickerItem('Bitcoin', 'BTC/USDT', '65,432.10', '+2.45%'),
-            _buildLiveTickerItem('Ethereum', 'ETH/USDT', '3,456.78', '-0.54%'),
-            _buildLiveTickerItem('Solana', 'SOL/USDT', '145.20', '+5.12%'),
-            _buildLiveTickerItem('Binance Coin', 'BNB/USDT', '589.43', '+1.20%'),
+            _buildMarketTabs(),
             const SizedBox(height: 32),
           ],
         ),
@@ -247,4 +244,68 @@ class _HomeView extends StatelessWidget {
       {'name': 'Ethereum', 'symbol': 'ETH/USDT', 'price': '3,456.78', 'change': '+1.12%'},
       {'name': 'Solana', 'symbol': 'SOL/USDT', 'price': '145.20', 'change': '+5.12%'},
       {'name': 'Binance Coin', 'symbol': 'BNB/USDT', 'price': '589.43', 'change': '-0.54%'},
-      {'name': 'Cardano', 'symbol
+      {'name': 'Cardano', 'symbol': 'ADA/USDT', 'price': '0.45', 'change': '+0.23%'},
+    ];
+
+    if (filter == 'gainers') {
+      data.sort((a, b) => b['change']!.compareTo(a['change']!));
+    }
+
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final item = data[index];
+        return _buildLiveTickerItem(item['name']!, item['symbol']!, item['price']!, item['change']!);
+      },
+    );
+  }
+  Widget _buildLiveTickerItem(String name, String symbol, String price, String change) {
+    bool isPositive = change.startsWith('+');
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.darkCard,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMD),
+        border: Border.all(color: AppTheme.darkHighlight, width: 1),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppTheme.darkSurface,
+              borderRadius: BorderRadius.circular(AppTheme.radiusSM),
+            ),
+            child: const Icon(LucideIcons.coins, color: AppTheme.accentGold),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: AppTheme.bodyMD.copyWith(color: AppTheme.darkText, fontWeight: FontWeight.bold)),
+                Text(symbol, style: AppTheme.bodyXS.copyWith(color: AppTheme.darkTextSecondary)),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text('\$$price', style: AppTheme.bodyMD.copyWith(color: AppTheme.darkText, fontWeight: FontWeight.bold)),
+              Text(
+                change,
+                style: AppTheme.bodyXS.copyWith(
+                  color: isPositive ? AppTheme.green500 : AppTheme.red500,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+

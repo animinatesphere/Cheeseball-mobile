@@ -8,6 +8,8 @@ import 'package:cheeseball/screens/auth/auth_screen.dart';
 import 'package:cheeseball/screens/user/currency_page.dart';
 import 'package:cheeseball/screens/admin/pages/admin_login.dart';
 import 'package:cheeseball/screens/admin/pages/admin_dashboard.dart';
+import 'package:cheeseball/screens/admin/pages/admin_orders_screen.dart';
+import 'package:cheeseball/screens/admin/pages/admin_markets_screen.dart';
 import 'package:cheeseball/screens/auth/forgot_password_screen.dart';
 import 'package:cheeseball/screens/auth/reset_password_screen.dart';
 import 'package:cheeseball/screens/user/swap_screen.dart';
@@ -48,6 +50,8 @@ class CheeseballApp extends StatelessWidget {
         '/currency-change': (context) => const CurrencyPage(),
         '/admin-login': (context) => const AdminLogin(),
         '/admin-dashboard': (context) => const AdminDashboard(),
+        '/admin-orders': (context) => const AdminOrdersScreen(),
+        '/admin-markets': (context) => const AdminMarketsScreen(),
         '/signup': (context) => const SignupScreen(),
         '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/reset-password': (context) {
